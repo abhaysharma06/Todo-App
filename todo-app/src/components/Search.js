@@ -2,7 +2,6 @@ import React from "react";
 import { HStack, Input, IconButton } from "@chakra-ui/react";
 import { MdSearch } from "react-icons/md";
 import { useState, useEffect } from "react";
-import { body } from "express-validator";
 
 function Search({ filterData }) {
   const [searchData, setSearchData] = useState("");

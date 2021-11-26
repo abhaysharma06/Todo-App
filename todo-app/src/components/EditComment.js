@@ -1,30 +1,37 @@
-import { Heading} from "@chakra-ui/layout";
-import { body } from "express-validator";
-import React, { useState } from "react";
-import { Button, HStack, Input, useToast } from '@chakra-ui/react';
+import React, { useState, useEffect } from "react";
+import { Button, HStack, Input } from "@chakra-ui/react";
+import { nanoid } from "nanoid";
 
+function EditComment({ editComment, addTodo }) {
+  const [editComments, setContent] = useState(editComment.todo);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    const todo = {
+      id: nanoid(),
+      body: editComments,
+    };
 
-function EditComment({todos}){
-  console.log(todos);
-//  const state={data:todos}
+    addTodo(todo);
+    setContent("");
+  }
 
-    return (
-      <form >
-      <HStack mt='8'>
+  return (
+    <form onSubmit={handleSubmit}>
+      <HStack mt="8">
         <Input
-          variant='filled'
-          placeholder='add your task'
-          value={todos}
+          variant="filled"
+          placeholder="add your task"
+          value={editComments}
+          onChange={(val) => {
+            setContent(val.target.value);
+          }}
         />
-        <Button colorScheme='pink' px='8' type='submit'>
+        <Button colorScheme="pink" px="8" type="submit">
           Save Edit
         </Button>
       </HStack>
     </form>
-    )
-
-
-  
+  );
 }
 export default EditComment;

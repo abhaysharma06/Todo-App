@@ -1,23 +1,30 @@
 import React from "react";
-import TodoList from "./components/TodoList";
-import AddTodo from "./components/AddTodo";
 import { VStack } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
+import Heading from "./components/Heading";
+import TodoList from "./components/TodoList";
+import AddTodo from "./components/AddTodo";
 import EditComment from "./components/EditComment";
 import Search from "./components/Search";
-import Heading from "./components/Heading";
 
 function App() {
   const [todos, setTodos] = useState(
     () => JSON.parse(localStorage.getItem("todos")) || []
   );
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-    filterData(todos);
-  }, [todos]);
 
-  const [displayTodo, setDisplayToo] = useState([]);
+  const [displayTodo, setDisplayTodo] = useState([]);
+  const [editTodo, seteditTodo] = useState(false);
+
+  function addTodo(todo) {
+    setTodos([...todos, todo]);
+  }
+
+  const filterData = (input) => {
+    setDisplayTodo(
+      todos.filter((todo) => todo.body.toLowerCase().includes(input))
+    );
+  };
 
   function deleteTodo(id) {
     const newTodos = todos.filter((todo) => {
@@ -26,15 +33,21 @@ function App() {
     setTodos(newTodos);
   }
 
-  function addTodo(todo) {
-    setTodos([...todos, todo]);
-  }
-
-  const filterData = (input) => {
-    setDisplayToo(
-      todos.filter((todo) => todo.body.toLowerCase().includes(input))
-    );
+  const editComment = (id) => {
+    const newTodos = todos.filter((todo) => todo.id !== id);
+    const selectedItem = todos.find((todo) => todo.id === id);
+    seteditTodo({
+      todos: newTodos,
+      todo: selectedItem.body,
+      id: id,
+      editTodo: true,
+    });
   };
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+    filterData(todos);
+  }, [todos]);
 
   return (
     <VStack p={4}>
@@ -42,12 +55,16 @@ function App() {
         <Route path="/" exact>
           <Heading />
           <Search todos={todos} filterData={filterData} />
-          <TodoList todos={displayTodo} deleteTodo={deleteTodo} />
+          <TodoList
+            todos={displayTodo}
+            deleteTodo={deleteTodo}
+            editComment={editComment}
+          />
           <AddTodo addTodo={addTodo} />
         </Route>
         <Route path="/edit-comments">
           <Heading />
-          <EditComment todos={todos} />
+          <EditComment editComment={editTodo} addTodo={addTodo} />
         </Route>
       </Switch>
     </VStack>

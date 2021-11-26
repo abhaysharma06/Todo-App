@@ -12,7 +12,7 @@ import { FaTrash } from "react-icons/fa";
 import { MdEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 
-function TodoList({ todos, deleteTodo }) {
+function TodoList({ todos, deleteTodo, editComment }) {
   if (!todos.length) {
     return (
       <Badge colorScheme="green" p="4" m="4" borderRadius="lg">
@@ -37,7 +37,11 @@ function TodoList({ todos, deleteTodo }) {
           <Text>{todo.body}</Text>
           <Spacer />
           <Link to="edit-comments">
-            <IconButton icon={<MdEdit />} isRound="true" />
+            <IconButton
+              icon={<MdEdit />}
+              isRound="true"
+              onClick={() => editComment(todo.id)}
+            />
             <Spacer />
           </Link>
           <IconButton
